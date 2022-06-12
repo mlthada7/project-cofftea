@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors" />
+    <meta name="generator" content="Hugo 0.88.1" />
+    {{-- CSRF Token --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>{{ $title }}</title>
+
+    <link href="https://getbootstrap.com/docs/5.1/examples/dashboard/" />
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    {{-- Bootstrap Icons --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+
+    {{-- My CSS --}}
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Sweet alert -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    {{-- Owl Carousel --}}
+    <link rel="stylesheet" href="/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/css/owl.theme.default.min.css">
+
+    <link rel="stylesheet" type="text/css" href="/css/trix.css">
+
+    <script src="/js/jquery-3.6.0.min.js"></script>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top shadow-blur" aria-label="Fourth navbar example" style="background-color: #1F2937">
+        <div class="container">
+            <a class="navbar-brand fs-5 me-5" href="/">Cofftea</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsNav" aria-controls="navbarsNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarsNav">
+                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('/') ? 'active' : '' }}" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('categories') ? 'active' : '' }}" href="/categories">Categories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('about') ? 'active' : '' }}" href="/about">About</a>
+                    </li>
+                    @auth
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('cart') ? 'active' : '' }}" href="/cart"> <span class="badge bg-info badge-pill cart-count">{{ $cartCount }}</span> Cart <i class="bi bi-cart-dash"></i></a>
+                    </li>
+                    @endauth
+                </ul>
+
+                <ul class="navbar-nav ms-auto me-0">
+                    @auth
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Welcome, {{ auth()->user()->name }}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item {{ Request::is('profile/info*') ? 'active' : '' }}" href="/profile/info"><i class="bi bi-person-circle"></i> My Dashboard/profile</a></li>
+                            <li><a class="dropdown-item {{ Request::is('my-orders') ? 'active' : '' }}" href="/my-orders"><i class="bi bi-layout-text-sidebar-reverse"></i> My Orders</a></li>
+                            <hr class="dropdown-divider">
+                    </li>
+                    <li>
+                        <form action="/logout" method="post">
+                            @csrf
+                            <button type="submit" class="dropdown-item"><i class="bi bi-box-arrow-right"></i> Logout</button>
+                        </form>
+                    </li>
+                </ul>
+                @else
+                <li class="nav-item d-flex">
+                    <a href="/login" class="nav-link {{ Request::is('login') ? 'active' : '' }}"><i class="bi bi-box-arrow-in-right"></i> Login</a>
+                    <a href="/register" class="nav-link {{ Request::is('register') ? 'active' : '' }}"><i class="bi bi-box-arrow-up-right"></i> Register</a>
+                </li>
+                @endauth
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+
+    <div class="mt-5">
+        <div class="py-4 mb-4 shadow-blur bg-light border-top">
+            <div class="container">
+                <h6 class="mb-0 text-muted"><a href="/categories" class="text-decoration-none link-secondary">Categories</a> / <a href="/products?category={{ $product->category->slug }}" class="text-decoration-none link-secondary">{{ $product->category->name }}</a> / {{ $product->name }}</h6>
+            </div>
+        </div>
+
+        <div class="container-sm mb-3 min-vh-100">
+            @if(session()->has('status'))
+            <script>
+                swal("{{ session('status') }}");
+
+            </script>
+            @endif
+            <div class="row mb-3 pt-3 border-bottom justify-content-center product-data">
+                {{-- <form action="/cart" method="post" enctype="multipart/form-data">
+            @csrf --}}
+                <div class="col-12 col-sm-5 col-md-4 col-lg-3 mb-4 text-center">
+                    {{-- <div class="d-block mx-auto min-height-100"> --}}
+                    @if($product->image)
+                    <img src="{{ asset('storage/' . $product->image) }}" class="w-100" alt="{{ $product->name }}">
+                    @else
+                    <img src="https://source.unsplash.com/500x500?{{ $product->name }}" class="img-fluid w-100" alt="{{ $product->name }}" style="max-width: 17rem; min-width: 11rem;">
+                    @endif
+                    {{-- </div> --}}
+                </div>
+
+                <div class="col-sm-7 col-md-7 col-lg-7 border rounded-2 mb-2 p-4">
+                    <h1 class="mb-2">{{ $product->name }}</h1>
+                    <label class="fw-bold me-4 fs-5">Rp{{ $product->selling_price }}</label>
+                    <label class="text-muted text-decoration-line-through">Rp{{ $product->original_price }}</label>
+                    <div class="mb-3 mt-3">
+                        {!! $product->description!!}
+                    </div>
+
+                    {{-- <label class="badge bg-success mb-3">Trending</label> --}}
+                    @if($product->qty > 0)
+                    <label class="badge bg-info mb-3">Stock Available</label>
+                    @else
+                    <label class="badge bg-danger mb-3">Out of stock</label>
+                    @endif
+
+                    <div class="col-4 col-sm-5 col-md-4 col-lg-2 mb-3">
+                        <input type="hidden" name="id" value="{{ $product->id }}" class="product-id">
+                        <label for="quantity">Quantity</label>
+                        {{-- <input type="number" class="form-control" name="quantity" value="1"> --}}
+                        <div class="input-group mb-3">
+                            {{-- <button class="input-group-text decrement-btn">-</button> --}}
+                            <input type="number" class="form-control qty-input" name="quantity" value="1" id="quantity">
+                            {{-- <button class="input-group-text increment-btn">+</button> --}}
+                        </div>
+                    </div>
+
+                    @if($product->qty > 0)
+                    <button class="btn btn-primary addToCartBtn" type="submit"><i class="bi bi-cart-plus"></i> Add to cart</button>
+                    @else
+                    <button class="btn btn-primary addToCartBtn" type="submit" disabled><i class="bi bi-cart-plus"></i> Add to cart</button>
+                    @endif
+
+                    {{-- </form> --}}
+                    {{-- </div> --}}
+                </div>
+            </div>
+
+            <div class="col-md-10">
+                <h3>Description</h3>
+                <div class="">{!! $product->description !!}</div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="pb-4 pt-2 bg-dark mt-auto">
+        <ul class="nav justify-content-center pt-3 pb-3 mb-3">
+            <li class="nav-item"><a href="/" class="nav-link mx-2 link-light">Home</a></li>
+            <li class="nav-item"><a href="" class="nav-link mx-2 link-light">Products</a></li>
+            <li class="nav-item"><a href="" class="nav-link mx-2 link-light">About Us</a></li>
+        </ul>
+        <p class="text-center text-white-50">&copy; 2021 Company, Inc</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
+
+    <script src="/js/owlcarousel/owl.carousel.min.js"></script>
+
+    <script src="/js/custom.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,87 @@
+.side-caption {
+    color: rgb(255, 255, 255);
+    /* right: 5%; */
+    /* text-align: center; */
+    max-width: 300px;
+    left: 10%;
+    /* top: auto; */
+    top: 20%;
+    transform: translateY(-10%);
+    bottom: initial;
+}
+
+.logout-link:hover {
+    color: red;
+}
+
+.card__shadow {
+    /* width: 15rem; */
+    /* height: 10rem; */
+    /* border-radius: 10px; */
+    box-shadow: 1px 4px 5px 2px rgb(216, 213, 213);
+    /* position: absolute; */
+    /* transform-style: all 0.2s ease; */
+}
+
+.card-product .card-categories {
+    /* width: 15rem; */
+    /* height: 10rem; */
+    border-radius: 10px;
+    /* position: absolute; */
+    /* transform-style: all 0.2s ease; */
+}
+
+.card-product:hover {
+    box-shadow: 10px 5px 5px rgb(240, 240, 240);
+    transform: scale(1.05);
+}
+
+.card-categories:hover {
+    box-shadow: 10px 5px 5px rgb(240, 240, 240);
+    transform: scale(1.05);
+}
+
+/* .owl-carousel .featured-carousel .owl-theme {
+    position: relative;
+} */
+
+/* rating */
+.rating-css div {
+    color: #ffe400;
+    font-size: 30px;
+    font-family: sans-serif;
+    font-weight: 800;
+    text-align: center;
+    text-transform: uppercase;
+    padding: 20px 0;
+}
+.rating-css input {
+    display: none;
+}
+.rating-css input + label {
+    font-size: 60px;
+    text-shadow: 1px 1px 0 #8f8420;
+    cursor: pointer;
+}
+.rating-css input:checked + label ~ label {
+    color: #b4afaf;
+}
+.rating-css label:active {
+    transform: scale(0.8);
+    transition: 0.3s ease;
+}
+
+.checked {
+    color: #ffe400;
+}
+
+/* End of Star Rating */
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
